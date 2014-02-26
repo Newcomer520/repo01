@@ -1,0 +1,283 @@
+﻿@using Newtonsoft;
+@model MvcApplicationIPS2.Web.Areas.Schedule.Models.ModelSchedule
+@{
+    Layout = "~/Views/_LayoutBase.cshtml";
+    //Title = "行事曆";
+    
+    
+    DateTime today = DateTime.Now;
+    string[] weekDays = { "一", "二", "三", "四", "五", "六", "日"};
+    string[] months = { "null", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "11", "12" };
+}
+
+@section Header
+{
+<link type="text/css" rel="stylesheet" href="http://inip.local/public/styles/jtable/elegant/J10-1.1.css" />
+@*<link type="text/css" rel="stylesheet" href="http://tnvcmipad.cminl.oa/infomon/styles/jtable/elegant/J10-1.1.css" />*@
+<link rel="stylesheet" media="screen" type="text/css" href="http://tnvcmipad.cminl.oa/infomon/js/temp/css/colorpicker.css" >
+
+<script type="text/javascript">    
+    var today = new Date('@(today.ToString("yyyy/MM/dd"))');
+    var readonly = @((Model.Authority & MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm) == MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm ? 0 : 1);
+    var l_root = '@Url.Content("~/Schedule/")';
+    var l_model = JSON.parse('@Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model))');
+</script>
+<script type="text/javascript" src="http://inip.local/public/scripts/jquery/jquery.min.js"></script>
+ <script type="text/javascript" src="http://inip.local/public/scripts/jTable/jTable-2.1.min.js"></script>
+@*<script type="text/javascript" src="http://tnvcmipad.cminl.oa/infomon/js/globaljs/jTable-2.1.s.js"></script>*@
+@*<script type="text/javascript" src="http://tnvcmipad.cminl.oa/infomon/js/globaljs/jTable-1.6.1.s.js"></script>*@
+<script type="text/javascript" src="http://jnoeapp01.cminl.oa/globaljs/basic.function.js"></script>
+@*<script type="text/javascript" src="http://jnoeapp01.cminl.oa/globaljs/block.js"></script>*@
+<script type="text/javascript" src="http://jnoeapp01.cminl.oa/globaljs/block.js"></script>
+<script type="text/javascript" src="http://tnvcmipad.cminl.oa/infomon/js/temp/colorpicker.js"></script>
+<script type="text/javascript" src="@Url.Content("~/Content/Scripts/Schedule/schedule.js")"></script>
+<style type="text/css">
+
+table.csCalLayout
+{
+/*-webkit-touch-callout: none;
+-webkit-user-select: none;
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;    */
+    table-layout: fixed;
+    overflow:hidden; 
+    /*border-collapse: collapse;*/
+    word-wrap:break-word;
+	box-sizing:border-box;
+    border: 1px solid black;
+    width: 683px;
+}    
+
+
+span.csTitle
+{   
+    color: Blue;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: 新細明體;
+}
+#tblEvents tr.csRemoveRow
+{
+    text-decoration: line-through;
+}
+table.csCalLayout th,
+table.csCalLayout td
+{
+    box-sizing: border-box;
+    width: 95px;
+    height:60px;
+    padding:1px;
+    overflow: hidden;
+}
+table.csCalLayout td
+{
+    border: 1px solid black;
+    vertical-align: top;
+    text-align: left;
+    font-family: 新細明體;
+    font-weight: normal;
+    font-size: 11px;
+}
+table.csCalLayout th
+{
+    vertical-align: top;    
+}
+.csWeekDay
+{
+    color: blue;
+    margin-top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 95px;
+}
+table.csCalLayout th span.csWD
+{
+}
+.csWDWeekend /*週日期*/
+{
+    color: red;
+}
+
+table.csCalLayout th > div,table.csCalLayout td > div
+{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    /*text-align: center;*/
+    margin-left: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+table.csCalLayout th > *:hover, table.csCalLayout td.csDayContent > *:hover
+{
+    
+    /*border: 2px solid Red;*/
+    cursor: pointer;
+}
+table.csCalLayout td div.csDayNum
+{
+    font-size: 12px;
+    padding-left: 5px;
+    text-align: left;
+    color: black;
+}
+
+
+table.csCalLayout td.csComment *
+{
+    /*font-weight: bold;*/
+    font-size: 12px;    
+    text-align: left;
+    margin-left: 5px;
+    /*white-space: pre-line;*/
+}
+td.csDayContent
+{       
+    cursor: pointer;
+    
+    @Model.CellStyle;
+}
+td.csDayContent *
+{
+    word-wrap: break-word;
+}
+td.csDayContent.csSelected
+{
+    border: 2px solid red;   
+}
+table.csCalLayout td.csDayContent.csToday
+{
+    border: 2px solid #9AFE2E
+}
+table.csCalLayout td.csDayContent.csToday.csSelected
+{
+    border: 2px solid red;
+}
+
+div.csSettingPanel
+{
+    margin: 0px;
+    padding: 1px;    
+    box-sizing: border-box;
+}
+
+div.csSettingPanelClosed
+{        
+    height:24px;
+    border: none;
+    overflow: hidden;
+}
+div.csSettingPanelExpanded
+{    
+    
+    border: 1px solid #8e8e8e;
+}
+#divSettingInner > *
+{
+    float: left;
+    margin-left: 10px;
+    display: none;
+}
+#divSettingInner > span
+{
+    margin-left: 2px;
+}
+.csCellUpdated
+{
+    color: red;
+}
+#divEventsPop
+{
+    width: 180px;
+    height: 150px;
+    overflow: auto;
+    position: absolute;
+    z-Index: 9;
+    border: 2px solid black;
+    background-color: white;
+    padding-left: 2px;
+    padding-right: 2px;
+    font-size: 1.2em;
+    word-wrap: break-word;
+}
+</style>
+}
+<div id="divOutter" style="width:700px;margin-left:auto;margin-right:auto;">
+    <div style="line-height:30px;">
+    <button class="GMToolPagerPrev" style="line-height:23px; vertical-align:top;position:inherit;background-color: White;" onclick="moveCalendar(-1);"></button>
+    <span id="spanTitle" class="csTitle">@(months[today.Month])月@(today.Year)</span>
+    <button class="GMToolPagerNext" style="line-height:23px; vertical-align:top;position:inherit;background-color: White;" onclick="moveCalendar(1);"></button>    
+    <button id="btnPrint" style="margin-left:30px;line-height:23px; vertical-align:top;position:inherit;background-color: White;" onclick="printTable();">Print</button>
+    </div>
+
+
+    <table id="calendar" class="csCalLayout">
+        <thead>            
+            <tr>
+            @for (int i = 0; i < 7; i++)
+            {
+                string cs = i >= 5 ? "csWD csWDWeekend" : "csWD";
+                <th><div><span class="@cs">星期@(weekDays[i])</span><div class="csWeekDay" style="color:Blue;"></div></div></th>                
+            }
+            </tr>        
+        </thead>
+        <tbody>
+        @for (int i = 0; i < 6; i++)
+        {
+            <tr>@for (int j = 0; j < 7; j++) {<td><div unselectable="on"><div unselectable="on"></div><div style="height:60px;word-wrap:break-all;" unselectable="on"></div></div></td>}</tr>
+        }
+        </tbody>
+    </table>    
+    @if ((Model.Authority & MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm) == MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm)
+    { 
+    <div id="divSettingPanel" class="csSettingPanel csSettingPanelClosed">
+        <button class="GMDefault GMExpand" onclick="settingPanelClick.apply(this);"></button>
+        <span style="font-size:10px;">設定..</span>
+        <div id="divSettingInner" style="margin-top:5px;">
+            <!--<input type="checkbox" onclick="changeMod.apply(this);" style="display: inline;" class="csFixed"/><span style="display:inline;" class="csFixed">編輯模式</span>-->
+            <div id="divCB" style="width:15px;height:15px;background-color:pink;cursor:pointer;"></div><span>日期底色</span>
+            <div id="divCF" style="width:15px;height:15px;background-color:black;cursor:pointer;"></div><span>字體顏色</span>                
+            <button onclick="modifyEvent.apply(this);">修改日誌</button>
+            <button onclick="save();">儲存</button>        
+            <button onclick="resetCalendar();setCalendar();">取消</button>                       
+        </div>
+    </div>
+    }
+    <div id="eventPanel" style="background-color:white;z-index:999;left:0px;top:0px;padding:0px;position:absolute;display:none;overflow:hidden;">
+        <div id="eventDays" style="width:300px;height:20px;font-size:15px;font-weight:bold;text-overflow:ellipsis;white-space: nowrap;overflow:hidden;">
+        </div>
+        <div style="overflow:auto;height:80px;">
+            <table id="tblEvents" class="mytable">
+                <thead>
+                    <tr><th style="width:200px;">摘要</th><th style="width:100px;">早/午</th><th style="width:80px;">刪除</th></tr>
+                </thead>
+                <tbody>
+        
+                </tbody>
+            </table>
+        </div>                
+        @if ((Model.Authority & MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm) == MvcApplicationIPS2.Web.Areas.Schedule.Models.enumAuthority.Adm)
+        {     
+        <div id="eventOperators" style="display:block;margin-top:10px;width:100%;line-height:20px;vertical-align:middle;">
+            <input id="eventTitle" style="width:200px;margin-left:10px;float:left;"/>            
+            <div id="eventCB" style="margin-left:10px;margin-top:2px;display:block;width:20px;height:20px;border:1px solid Black;cursor:pointer;float:left;"></div>
+            <span style="float:left;vertical-align:center;line-height:20px;">背景</span>
+            <div id="eventCF" style="margin-top:2px;display:block;width:20px;height:20px;border:1px solid Black;cursor:pointer;float:left;"></div>
+            <span style="float:left;">字</span>
+            <input id="chkDefaultStyle" type="checkbox" /><span>預設</span>
+            <div style="clear:both;"></div>
+            <button id="btnNewEvent" style="float:left;">新增</button>
+            
+            <button id="btnOkEvents" style="margin-left:130px;">確定</button>
+            <button onclick="cancelModifyingEvents();" style="">取消</button>
+            
+            
+        </div>
+        }    
+    </div>
+</div>
+<div id="divEventsPop" style="display:none;padding-left:10px;padding-right:10px;box-sizing: border-box;">
+
+</div>
